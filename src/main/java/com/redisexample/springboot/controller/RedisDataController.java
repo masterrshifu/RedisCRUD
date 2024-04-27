@@ -1,7 +1,6 @@
 package com.redisexample.springboot.controller;
 
 import com.redisexample.springboot.entity.HashData;
-import com.redisexample.springboot.entity.HashPair;
 import com.redisexample.springboot.service.RedisDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,13 +25,7 @@ public class RedisDataController {
         return new ResponseEntity<>("Data stored successfully!", HttpStatus.OK);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<String> storeHashPairData(@RequestBody HashPair hashData) {
-        redisDataService.storeHashPairData(hashData);
-        return new ResponseEntity<>("Data stored successfully!", HttpStatus.OK);
-    }
-
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<String> updateData(@RequestBody HashData hashData) {
         redisDataService.updateHashData(hashData);
         return new ResponseEntity<>("Data updated successfully!", HttpStatus.OK);
@@ -41,6 +34,12 @@ public class RedisDataController {
     @DeleteMapping("/delete/{hashKey}")
     public ResponseEntity<String> deleteData(@PathVariable String hashKey) {
         redisDataService.deleteHashData(hashKey);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{hashKey}/{field}")
+    public ResponseEntity<String> deleteSpecificData(@PathVariable String hashKey, @PathVariable String field) {
+        redisDataService.deleteFieldInHash(hashKey, field);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
