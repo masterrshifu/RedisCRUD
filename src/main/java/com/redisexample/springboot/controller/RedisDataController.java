@@ -8,11 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
+@ControllerAdvice
 public class RedisDataController {
 
     private final RedisDataService redisDataService;
@@ -51,8 +53,8 @@ public class RedisDataController {
         return ResponseEntity.ok("The fields have been deleted");
     }
 
-    @GetMapping("/retrieve/{hashKey}")
-    public ResponseEntity<Map<String, String>> retrieveData(@PathVariable String hashKey) {
+    @GetMapping("/retrieve")
+    public ResponseEntity<Map<String, String>> retrieveData(@RequestParam String hashKey) {
         return new ResponseEntity<>(redisDataService.retrieveHashData(hashKey), HttpStatus.OK);
     }
 
@@ -65,7 +67,6 @@ public class RedisDataController {
     public ResponseEntity<Map<String, Map<String, String>>> getAllHashesWithKeys() {
         return new ResponseEntity<>(redisDataService.getAllHashesWithKeysAndValues(), HttpStatus.OK);
     }
-
 
     // this method allows you to update values of multiple fields in multiple hashes
     @PutMapping("/hashes/updateValue")
