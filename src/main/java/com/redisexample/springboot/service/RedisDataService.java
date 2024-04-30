@@ -3,6 +3,9 @@ package com.redisexample.springboot.service;
 import com.redisexample.springboot.dataModels.HashingData;
 import com.redisexample.springboot.entity.HashData;
 import com.redisexample.springboot.entity.KeyData;
+import com.redisexample.springboot.exceptions.ErrorCode;
+import com.redisexample.springboot.exceptions.NoSuchFieldFoundException;
+import com.redisexample.springboot.exceptions.NoSuchKeyFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -68,7 +71,7 @@ public class RedisDataService {
             String hashKey = hashData.getHashKey();
             if (Boolean.FALSE.equals(redisTemplate.hasKey(hashKey))) {
                 System.out.println("Hash key '" + hashKey + "' does not exist in Redis.");
-                throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+                throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
             }
             redisTemplate.delete(hashKey);
         }
@@ -86,7 +89,7 @@ public class RedisDataService {
 
             if (Boolean.FALSE.equals(redisTemplate.hasKey(hashKey))) {
                 System.out.println("Hash key '" + hashKey + "' does not exist in Redis.");
-                throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+                throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
             }
 
             List<KeyData> keys = hashData.getKeys();
@@ -97,7 +100,7 @@ public class RedisDataService {
                     hashOps.delete(hashKey, field);
                 } else {
                     // Handle the case where the field doesn't exist
-                    throw new RuntimeException("The field doesn't exist for the hashKey : " + hashKey);
+                    throw new NoSuchFieldFoundException(ErrorCode.ERROR_FIELD_NOT_FOUND); // Or throw an exception, depending on your use case
                 }
             }
 
@@ -120,7 +123,7 @@ public class RedisDataService {
 
             if (Boolean.FALSE.equals(redisTemplate.hasKey(hashKey))) {
                 System.out.println("Hash key '" + hashKey + "' does not exist in Redis.");
-                throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+                throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
             }
 
             // Update specific fields in the existing data
@@ -155,14 +158,14 @@ public class RedisDataService {
         HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
 
         if (Boolean.FALSE.equals(redisTemplate.hasKey(hashKey))) {
-            throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+            throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
         }
 
         if (hashOps.hasKey(hashKey, field)) {
             hashOps.put(hashKey, field, newValue);
         } else {
             // Handle the case where the field doesn't exist
-            throw new RuntimeException("The field provided doesn't exist in Redis");
+            throw new NoSuchFieldFoundException(ErrorCode.ERROR_FIELD_NOT_FOUND); // Or throw an exception, depending on your use case
         }
     }
 
@@ -175,7 +178,7 @@ public class RedisDataService {
             String hashKey = hashData.getHashKey();
 
             if (Boolean.FALSE.equals(redisTemplate.hasKey(hashKey))) {
-                throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+                throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
             }
 
             List<KeyData> keys = hashData.getKeys();
@@ -188,7 +191,7 @@ public class RedisDataService {
                     hashOps.put(hashKey, field, newValue);
                 } else {
                     // Handle the case where the field doesn't exist
-                    throw new RuntimeException("The field provided doesn't exist in Redis");
+                    throw new NoSuchFieldFoundException(ErrorCode.ERROR_FIELD_NOT_FOUND); // Or throw an exception, depending on your use case
                 }
 
             }
@@ -201,7 +204,7 @@ public class RedisDataService {
         HashOperations<String, String, String> hashOps = redisTemplate.opsForHash();
 
         if (Boolean.FALSE.equals(redisTemplate.hasKey(hashKey))) {
-            throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+            throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
         }
 
         if (hashOps.hasKey(hashKey, oldField)) {
@@ -210,7 +213,7 @@ public class RedisDataService {
             hashOps.put(hashKey, newField, value != null ? value : oldValue); // Add new field
         } else {
             // Handle the case where the field doesn't exist
-            throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+            throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
         }
     }
 
@@ -229,7 +232,7 @@ public class RedisDataService {
                 String value = key.getValue();
 
                 if (Boolean.FALSE.equals(redisTemplate.hasKey(hashKey))) {
-                    throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+                    throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
                 }
 
                 if (hashOps.hasKey(hashKey, oldField)) {
@@ -238,7 +241,7 @@ public class RedisDataService {
                     hashOps.put(hashKey, newField, value != null ? value : oldValue); // Add new field
                 } else {
                     // Handle the case where the field doesn't exist
-                    throw new RuntimeException("The hash key " + hashKey + " doesn't exist in Redis"); // Or throw an exception, depending on your use case
+                    throw new NoSuchKeyFoundException(ErrorCode.ERROR_KEY_NOT_FOUND); // Or throw an exception, depending on your use case
                 }
 
             }
